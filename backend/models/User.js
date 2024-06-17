@@ -1,4 +1,5 @@
 import { Schema,model } from "mongoose";
+import {isEmail} from 'express-validator'
 import bcrypt from 'bcryptjs'
 
 const userSchema = new Schema({
@@ -11,6 +12,7 @@ const userSchema = new Schema({
     email: {
         type:String,
         required:[true,"Name is a required field!"],
+        validate:[isEmail,"Please enter a valid email address!"],
         unique:true,
         trim:true
     },
@@ -23,7 +25,7 @@ const userSchema = new Schema({
     confirmPassword: {
         type: String,
         validate:{
-            validator:function(value){
+            validator:function(value){ //here we are using anonymous function because we need to use this keyword, arrow function doesn't have this keyword
                 this.password === value
             },
             message: "Password and confirm password doesn't match! Please check your passwords!"
@@ -32,7 +34,7 @@ const userSchema = new Schema({
     },
     picture:{
         type:String,
-        // default:"default.jpg"
+        default:"default.jpghttps://media.istockphoto.com/id/1316420668/vector/user-icon-human-person-symbol-social-profile-icon-avatar-login-sign-web-user-symbol.jpg?s=612x612&w=0&k=20&c=AhqW2ssX8EeI2IYFm6-ASQ7rfeBWfrFFV4E87SaFhJE=" //default picture if user doesn't upload any picture
     }
 },{
     timestamps:true
