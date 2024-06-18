@@ -1,6 +1,7 @@
 import { Schema,model } from "mongoose";
-import {isEmail} from 'express-validator'
 import bcrypt from 'bcryptjs'
+import validator from 'validator';
+const isEmail = validator.isEmail
 
 const userSchema = new Schema({
     name: {
@@ -12,7 +13,7 @@ const userSchema = new Schema({
     email: {
         type:String,
         required:[true,"Name is a required field!"],
-        validate:[isEmail,"Please enter a valid email address!"],
+        validate:[isEmail,"Invalid email!! Please enter valid email!"],
         unique:true,
         trim:true
     },
@@ -25,8 +26,8 @@ const userSchema = new Schema({
     confirmPassword: {
         type: String,
         validate:{
-            validator:function(value){ //here we are using anonymous function because we need to use this keyword, arrow function doesn't have this keyword
-                this.password === value
+            validator: function(value){ //here we are using anonymous function because we need to use this keyword, arrow function doesn't have this keyword
+                return value === this.password;
             },
             message: "Password and confirm password doesn't match! Please check your passwords!"
         },
@@ -41,8 +42,8 @@ const userSchema = new Schema({
 })
 
 
-//pre hook = before saving the document
-userSchema.pre('save', async (next)=>{
+// pre hook = before saving the document
+userSchema.pre('save', async function(next){
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password,salt)
     next()

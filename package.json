@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "express-validator": "^7.1.0"
+    "express-validator": "^7.1.0",
+    "mongodb": "^6.7.0"
   }
 }
