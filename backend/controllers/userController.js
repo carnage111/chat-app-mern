@@ -5,11 +5,14 @@ const register=async (req,res)=>{
     try {
         const {name,email,password,confirmPassword}=req.body;
 
+        console.log(req.file);
+
         let newUser=await User.create({
             name,
             email,
             password,
-            confirmPassword
+            confirmPassword,
+            photo: req.file.path
         })
 
         res.status(201).json({

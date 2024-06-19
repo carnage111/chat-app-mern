@@ -33,9 +33,9 @@ const userSchema = new Schema({
         },
         select:false //this will not show the confirmPassword field in the output when we get the user data
     },
-    picture:{
+    photo:{
         type:String,
-        default:"default.jpghttps://media.istockphoto.com/id/1316420668/vector/user-icon-human-person-symbol-social-profile-icon-avatar-login-sign-web-user-symbol.jpg?s=612x612&w=0&k=20&c=AhqW2ssX8EeI2IYFm6-ASQ7rfeBWfrFFV4E87SaFhJE=" //default picture if user doesn't upload any picture
+        default:"https://t3.ftcdn.net/jpg/05/87/76/66/360_F_587766653_PkBNyGx7mQh9l1XXPtCAq1lBgOsLl6xH.jpg" //default picture if user doesn't upload any picture
     }
 },{
     timestamps:true
