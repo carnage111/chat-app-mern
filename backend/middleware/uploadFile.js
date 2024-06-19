@@ -15,6 +15,7 @@ const storage = new CloudinaryStorage({
     allowedFormats: ['jpg', 'png', 'jpeg'],
     params:{
         folder: 'chat-app',
+        public_id: (req, file) => Date.now() + '-' + file.originalname.split('.')[0] // use Date.now() + original name without extension as the public ID
     }
 })
 
