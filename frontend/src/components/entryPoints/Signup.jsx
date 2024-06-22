@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import './signup-login.css';
 import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -37,9 +41,35 @@ const Signup = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log('User data:', formData);
 
-    console.log('User data:', user); 
-  };
+    const formData = new FormData();
+    formData.append('name', user.name);
+    formData.append('email', user.email);
+    formData.append('password', user.password);
+    formData.append('confirmPassword', user.confirmPassword);
+    formData.append('photo', user.picture);
+
+    // console.log('User data:', formData); //cant log the formData object directly for security reasons, so we will loop through the formData object and log the key value pairs
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
+
+    try{
+      let response = axios.post('http://localhost:5000/api/v1/user/register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      })
+
+
+      console.log(response.data)
+
+      navigate('/chats');
+    } catch(error){
+      console.log(error.message);
+    }
+  }
 
   return (
     <div className='signup-comp'>
