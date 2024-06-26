@@ -47,4 +47,26 @@ const login = asyncHandler(async(req,res)=>{
 
 })
 
-export {register,login}
+
+// /home?search=akash
+// {search:'akash'}
+const searchUsers = asyncHandler(async (req, res, next) => {
+    let userId = req.userId;
+    let keyword = req.query.search
+      ? {
+          or$: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+    let users = await User.find(keyword).find({ _id: { $ne: userId } }).exec();
+    if (!users) {
+      let err = new Error("Users not found");
+      next(err);
+    }
+    res.status(200).json(users);
+
+});
+
+export {register,login,searchUsers}
