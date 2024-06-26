@@ -39,11 +39,11 @@ const Signup = () => {
     setUser((prevUser) => ({ ...prevUser, [name]: name === 'picture' ? files[0] : value })); //if the name is name, email, password or confirmPassword, then set the value to the respective field, else set the picture to the file selected
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('User data:', formData);
-
     const formData = new FormData();
+    
+    console.log('User data:', formData);
     formData.append('name', user.name);
     formData.append('email', user.email);
     formData.append('password', user.password);
@@ -55,27 +55,22 @@ const Signup = () => {
     //   console.log(`${key}: ${value}`);
     // }
 
-    try{
-      let response = axios.post('http://localhost:5000/api/v1/user/register', formData, {
+    let {data} = await axios.post(
+      "http://localhost:5000/api/v1/user/register", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-        }
-      })
-
-
-      console.log(response.data)
-
-      navigate('/chats');
-    } catch(error){
-      console.log(error.message);
-    }
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    )
+    localStorage.setItem("token",data.token)
+    navigate("/chats",{replace:true})
   }
 
   return (
     <div className='signup-comp'>
       <div className="signup-container">
         <h1>Sign Up</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <label htmlFor="name">Name:</label>
           <input type="text" id="name" name="name" value={user.name} onChange={handleChange} required/>
 
