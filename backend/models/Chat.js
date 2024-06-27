@@ -8,17 +8,18 @@ const chatSchema = new Schema({
         type:Boolean,
         default:false
     },
-    users:{
-        type:[Schema.Types.ObjectId],
+    users:[{
+        type: Schema.Types.ObjectId,
         ref:"User"
-    },
-    lastMessage:{
+    }],
+    latestMessage:{
         type:Schema.Types.ObjectId,
         ref:"Message"
     },
 
+},{
+    timestamps:true
 })
 
 const Chat = model("Chat", chatSchema)
-
 export default Chat

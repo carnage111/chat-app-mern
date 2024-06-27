@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {register,login, searchUsers} from '../controllers/userController.js'
 import upload from '../middleware/uploadFile.js';
-import auth from '../middleware/auth..js';
+import auth from '../middleware/auth.js';
 
 const userRouter = Router()
 
