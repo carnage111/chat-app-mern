@@ -62,14 +62,14 @@ const fetchChats = asyncHandler(async(req,res)=>{
 //@Path          post /api/v1/chat
 //@access         Private 
 const createGroup = asyncHandler(async(req,res,next)=>{
-    if(!req.body.user || !req.body.chatName){
-        res.status(400).json("Please fill all the fields!!")
+    if(!req.body.users || !req.body.chatName){
+        return res.status(400).json("Please fill all the fields!!")
     }
 
     let users = await JSON.parse(req.body.users.replace(/'/g,'"')) //here we are converting the string to json object, here the replace function is used to replace the single quotes with double quotes as the json object should have double quotes, here /'/g means anything inside the / / will be replaced by the second argument of the replace function i.e. '"' and g means globally i.e. all the single quotes will be replaced by double quotes, g is a global flag/modifier 
 
     if(users<2){
-        res.status(400).json("To create a group there should be more than 2 users")
+        return res.status(400).json("To create a group there should be more than 2 users")
     }
 
     users.push(req.userId)
@@ -96,4 +96,60 @@ const createGroup = asyncHandler(async(req,res,next)=>{
     }
 })
 
-export {accessChat, fetchChats, createGroup}
+
+//@description   rename group chat
+//@Path          PUT /api/v1/chat
+//@access        Private 
+const renameGroup = asyncHandler(async(req,res,next)=>{
+    let {chatId,chatName} = req.body
+
+    if(!chatId || !chatName){
+        return res.status(400).json("Please fill all the fields")
+    }
+
+    let updatedChat = await Chat.findByIdAndUpdate(chatId,{chatName},{new:true}).populate("users","-password -confirmPassword").populate("groupAdmin","-password -confirmPassword").populate("latestMessage")
+
+    if(!updatedChat){
+        return res.status(400).json("Chat doesn't exist")
+    }
+    res.status(200).json(updatedChat)
+})
+
+
+
+//@description   add person to group chat
+//@Path          PUT /api/v1/chat/add
+//@access        Private 
+const addPerson = asyncHandler(async(req,res,next)=>{
+    let {chatId,userId}=req.body
+    if(!chatId || !userId){
+        return res.status(400).json("Please fill all the fields")
+    }
+
+    let updatedGroup = await Chat.findByIdAndUpdate(chatId,{$push:{users:userId}},{new:true}).populate("users","-password -confirmPassword").populate("groupAdmin","-password -confirmPassword").populate("latestMessage")
+
+    if(!updatedGroup){
+        return res.status(400).json("Chat doesn't exist")
+    }
+    res.status(200).json(updatedGroup)
+})
+
+
+//@description   remove person from group chat
+//@Path          PUT /api/v1/chat/remove
+//@access        Private 
+const removePerson = asyncHandler(async(req,res,next)=>{
+    let {chatId,userId}=req.body
+    if(!chatId || !userId){
+        return res.status(400).json("Please fill all the fields")
+    }
+
+    let updatedGroup=await Chat.findByIdAndUpdate(chatId,{$pull:{users:userId}},{new:true}).populate("users","-password -confirmPassword").populate("groupAdmin","-password -confirmPassword").populate("latestMessage")
+
+    if(!updatedGroup){
+        return res.status(400).json("Chat doesn't exist")
+    }
+    res.status(200).json(updatedGroup)
+})
+
+export {accessChat, fetchChats, createGroup, renameGroup, addPerson, removePerson}
