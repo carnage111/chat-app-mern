@@ -1,8 +1,7 @@
 import React,{useState} from 'react';
-import { Link } from 'react-router-dom'; // Assuming you use React Router for navigation
 import './signup-login.css';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const navigate=useNavigate()
@@ -10,7 +9,7 @@ const Login = () => {
   const [password,setPassword]=useState("")
 
   const handleSubmit=async (e)=>{
-    e.preventDefault()
+    e.preventDefault()  
 
     let formData=new FormData()
     formData.append("email",email)
@@ -25,7 +24,7 @@ const Login = () => {
         },
       }
     );
-    localStorage.setItem("token",data.token)
+    localStorage.setItem("user",JSON.stringify(data))
     navigate("/chats",{replace:true})
   }
   return (
@@ -39,7 +38,7 @@ const Login = () => {
           <input type="password" id="password" onChange={(e)=>setPassword(e.target.value)} value={password} required />
           <button type="submit">Login</button>
         </form>
-        <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+        <p>Don't have an account? <Link to="/signup"><b>Sign up</b></Link></p>
       </div>
     </div>
   );

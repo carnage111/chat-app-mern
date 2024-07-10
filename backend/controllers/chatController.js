@@ -16,7 +16,7 @@ const accessChat = asyncHandler(async(req,res,next)=>{
     let isChat = await Chat.find({
         isGroupChat:false,
         $and:[{users:{$elemMatch:{$eq:userId}}},{users:{$elemMatch:{$eq:req.userId}}}]
-    }).populate("users","-password","-confirmPassword").populate("latestMessage")
+    }).populate("users","-password -confirmPassword").populate("latestMessage")
 
     isChat = await Chat.populate(isChat,{
         path:"latestMessage.sender",
@@ -47,7 +47,7 @@ const accessChat = asyncHandler(async(req,res,next)=>{
 //@Path          GET /api/v1/chat
 //@access        Private 
 const fetchChats = asyncHandler(async(req,res)=>{
-    let chats = await Chat.find({users:{$elemMatch:{$eq:req.userId}}}).populate("users","-password").populate("groupAdmin","-password").populate("latestMessage").sort({updatedAt:-1})
+    let chats = await Chat.find({users:{$elemMatch:{$eq:req.userId}}}).populate("users","-password -confirmPassword").populate("groupAdmin","-password -confirmPassword").populate("latestMessage").sort({updatedAt:-1})
 
     let finalChats = await Chat.populate(chats,{
         path:"latestMessage.sender",

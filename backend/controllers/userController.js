@@ -5,10 +5,12 @@ import { genToken } from "../utils/genToken.js";
 const register=asyncHandler(async (req,res)=>{
     const {name,email,password,confirmPassword}=req.body;
 
-    // if (!name || !email || !password || !confirmPassword) {
-    //     res.status(400);
-    //     throw new Error('MISSING_CREDENTIALS');
-    // }
+    let existingUser = await User.findOne({ email });
+    console.log(name, email, password, confirmPassword);
+    if (existingUser) {
+      throw new Error("User exists already");
+    }
+
     console.log(req.file);
 
     let newUser=await User.create({
@@ -20,6 +22,7 @@ const register=asyncHandler(async (req,res)=>{
     })
 
     let token = await genToken(newUser._id)
+    newUser=await User.findById(newUser._id).select({password:0,confirmPassword:0})
 
     res.status(201).json({
         status:"success",
@@ -31,11 +34,12 @@ const register=asyncHandler(async (req,res)=>{
 const login = asyncHandler(async(req,res)=>{
     const {email,password} = req.body
     console.log(req.body);
-    const existingUser = await User.findOne({email})
+    let existingUser = await User.findOne({email})
 
     if(!existingUser || !(existingUser.verifyPassword(password,existingUser.password))){
         throw new Error("User not found, Please register yourself!")
     }
+    existingUser=await User.findById(existingUser._id).select({password:0,confirmPassword:0})
 
     let token = await genToken(existingUser._id);
 
