@@ -14,7 +14,7 @@ let ChatProvider=({children})=>{
             navigate("/",{replace:true})
         }
         setUser(user)
-    },[ ])
+    },[])
 
     return <ChatContext.Provider value={{user,setUser}}>
         {children}

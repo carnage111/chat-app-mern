@@ -7,7 +7,7 @@ import { ChatState } from '../../contexts/ChatContext';
 
 const ChatBox = () => {
   let {user} = ChatState()
-  console.log("user: "+user);
+  console.log("user: ", user);
   const [users] = useState([
     { id: "1", name: 'Bob', avatar: 'https://bit.ly/ryan-florence', displayName: 'User 1', email: 'bob@example.com' },
     { id: "2", name: 'Timmy', avatar: 'https://bit.ly/dan-abramov', displayName: 'User 2', email: 'timmy@example.com' },

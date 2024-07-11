@@ -31,25 +31,25 @@ const register=asyncHandler(async (req,res)=>{
     })
 })
 
-const login = asyncHandler(async(req,res)=>{
-    const {email,password} = req.body
-    console.log(req.body);
-    let existingUser = await User.findOne({email})
+const login = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+  console.log(req.body);
+  let existingUser = await User.findOne({ email });
 
-    if(!existingUser || !(existingUser.verifyPassword(password,existingUser.password))){
-        throw new Error("User not found, Please register yourself!")
-    }
-    existingUser=await User.findById(existingUser._id).select({password:0,confirmPassword:0})
+  if (!existingUser || !(await existingUser.verifyPassword(password, existingUser.password))) {
+    return res.status(401).json({ message: "Invalid email or password" });
+  }
 
-    let token = await genToken(existingUser._id);
+  existingUser = await User.findById(existingUser._id).select({ password: 0, confirmPassword: 0 });
 
-    res.status(200).json({
-        status: "Success!",
-        existingUser,
-        token
-    })
+  let token = await genToken(existingUser._id);
 
-})
+  res.status(200).json({
+    status: "Success!",
+    existingUser,
+    token,
+  });
+});
 
 
 // /home?search=akash
