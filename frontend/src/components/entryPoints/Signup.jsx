@@ -55,7 +55,8 @@ const Signup = () => {
           },
         }
       );
-      localStorage.setItem("user",JSON.stringify(data))
+      
+      localStorage.setItem("user", JSON.stringify(data));
       navigate("/chats", { replace: true });
     } catch (error) {
       toast({
@@ -75,16 +76,16 @@ const Signup = () => {
         <h1>Sign Up</h1>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <label htmlFor="name">Name:</label>
-          <input type="text" id="name" name="name" value={user.name} onChange={handleChange} required />
+          <input type="text" id="name" name="name" value={user.name} onChange={handleChange} pattern=".{4,}" title="Name must be at least 8 characters long" required />
 
           <label htmlFor="email">Email:</label>
           <input type="email" id="email" name="email" value={user.email} onChange={handleChange} required />
 
           <label htmlFor="password">Password:</label>
-          <input type="password" id="password" name="password" value={user.password} onChange={handleChange} required />
+          <input type="password" id="password" name="password" value={user.password} onChange={handleChange} pattern=".{8,}" title="Password must be at least 8 characters long" required />
 
           <label htmlFor="confirmPassword">Confirm Password:</label>
-          <input type="password" id="confirmPassword" name="confirmPassword" value={user.confirmPassword} onChange={handleChange} required />
+          <input type="password" id="confirmPassword" name="confirmPassword" value={user.confirmPassword} onChange={handleChange} pattern=".{8,}" title="Password must be at least 8 characters long" required />
 
           <label htmlFor="profilePicture">Profile Picture:</label>
           <input type="file" id="profilePicture" name="picture" accept="image/*" onChange={handleChange} required />

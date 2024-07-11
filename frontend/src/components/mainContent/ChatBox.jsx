@@ -24,7 +24,7 @@ const ChatBox = () => {
   return (
     <Flex direction="column" h="100vh" bg="#242424">
       <Box>
-        <ChatNav selectedUser={selectedUser} />
+        {user && <ChatNav user={user}/>}
       </Box>
       <Flex flex="1" overflow="hidden">
         <Box

@@ -46,7 +46,7 @@ const login = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     status: "Success!",
-    existingUser,
+    data: existingUser,
     token,
   });
 });

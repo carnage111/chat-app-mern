@@ -59,8 +59,11 @@ const Login = () => {
             id="password"
             onChange={(e) => setPassword(e.target.value)}
             value={password}
+            pattern=".{8,}"
+            title="Password must be at least 8 characters long"
             required
           />
+
           <button type="submit">Login</button>
         </form>
         <p>
