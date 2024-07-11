@@ -21,9 +21,9 @@ const Chat = () => {
     new Message({
       id: 2,
       message: (
-        <p>
+        <span>
           <span>11:50:</span>Hey! TImmy here.
-        </p>
+        </span>
       ),
       senderName: "Timmy"
     })
