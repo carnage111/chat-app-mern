@@ -1,29 +1,81 @@
-import React, { useRef } from "react";
-import {Avatar,Box,Button,Text,Drawer,DrawerBody,DrawerFooter,DrawerHeader,DrawerOverlay,DrawerContent,DrawerCloseButton,useDisclosure,Input,} from "@chakra-ui/react";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Avatar, Box, Button, Text, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent,
+  DrawerCloseButton, useDisclosure, Input, List, ListItem, useToast,
+} from "@chakra-ui/react";
 import { BellIcon, ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
-import { Menu,MenuButton,MenuList,MenuItem,MenuDivider,} from "@chakra-ui/react";
-import { Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton,} from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem, MenuDivider } from "@chakra-ui/react";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const ChatNav = ({ user }) => {
-  const {
-    isOpen: isDrawerOpen,
-    onOpen: onDrawerOpen,
-    onClose: onDrawerClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isModalOpen,
-    onOpen: onModalOpen,
-    onClose: onModalClose,
-  } = useDisclosure();
-
+  const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
+  const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onModalClose } = useDisclosure();
   const btnRef = useRef();
   const navigate = useNavigate();
+  const toast = useToast();
+
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   const logout = () => {
     localStorage.removeItem("user");
     navigate("/", { replace: true });
+  };
+
+  const handleSearch = async () => {
+    if (!search.trim()) {
+      toast({
+        title: 'Search query is empty',
+        description: 'Please enter a search query',
+        status: 'warning',
+        duration: 4000,
+        isClosable: true,
+        position: 'top',
+      });
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(`http://localhost:5000/api/v1/user?search=${search}`, config);
+      console.log(data);
+      if(data.length!=0){
+        toast({
+          title: 'Search successful',
+          description: `${data.length} users found`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+          position: 'top',
+        });
+      }else{
+        toast({
+          title: 'User not found',
+          description: "User with the specified name doesn't exist",
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+          position: 'top',
+        });
+      }
+      setSearchResults(data);
+    } catch (error) {
+      console.error("Failed to fetch users", error);
+      toast({
+        title: 'Search failed',
+        description: 'An error occurred while fetching users',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
   };
 
   return (
@@ -48,13 +100,30 @@ const ChatNav = ({ user }) => {
           <DrawerCloseButton />
           <DrawerHeader>Search users</DrawerHeader>
           <DrawerBody>
-            <Input placeholder="Type here..." />
+            <Input
+              placeholder="Search by name or email"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button mt={4} colorScheme="blue" onClick={handleSearch}>
+              Search
+            </Button>
+            <List spacing={3} mt={4}>
+              {searchResults.map((user) => (
+                <ListItem key={user._id} display="flex" alignItems="center">
+                  <Avatar name={user.name} src={user.photo} size="sm" mr={2} />
+                  <Text>{user.name}</Text>
+                </ListItem>
+              ))}
+            </List>
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onDrawerClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue">Save</Button>
+            <Button colorScheme="blue" onClick={onDrawerClose}>
+              Close
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

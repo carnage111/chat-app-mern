@@ -57,6 +57,12 @@ const Signup = () => {
       );
       
       localStorage.setItem("user", JSON.stringify(data));
+      toast({
+        title: 'Registration Successful',
+        status: 'success',
+        duration: 4000,
+        isClosable: true,
+      })
       navigate("/chats", { replace: true });
     } catch (error) {
       toast({

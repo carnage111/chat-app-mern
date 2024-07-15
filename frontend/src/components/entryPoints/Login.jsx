@@ -28,6 +28,12 @@ const Login = () => {
         }
       );
       localStorage.setItem('user', JSON.stringify(data));
+      toast({
+        title: 'Login Successful',
+        status: 'success',
+        duration: 4000,
+        isClosable: true,
+      })
       navigate('/chats', { replace: true });
     } catch (error) {
       toast({

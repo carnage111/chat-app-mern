@@ -58,7 +58,7 @@ const searchUsers = asyncHandler(async (req, res, next) => {
     let userId = req.userId;
     let keyword = req.query.search
       ? {
-          or$: [
+          $or: [
             { name: { $regex: req.query.search, $options: "i" } },
             { email: { $regex: req.query.search, $options: "i" } },
           ],
