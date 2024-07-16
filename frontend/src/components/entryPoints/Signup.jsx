@@ -39,8 +39,32 @@ const Signup = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!user.name || !user.email || !user.password || !user.confirmPassword || !user.picture) {
+      toast({
+        title: 'Missing Fields',
+        description: 'Please fill in all fields.',
+        status: 'warning',
+        duration: 4000,
+        isClosable: true,
+        position: 'top',
+      });
+      return;
+    }
+
+    if (user.password !== user.confirmPassword) {
+      toast({
+        title: 'Password Mismatch',
+        description: 'Passwords do not match.',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+        position: 'top',
+      });
+      return;
+    }
+
     const formData = new FormData();
-    
     formData.append('name', user.name);
     formData.append('email', user.email);
     formData.append('password', user.password);
@@ -48,26 +72,39 @@ const Signup = () => {
     formData.append('photo', user.picture);
 
     try {
-      let { data } = await axios.post(
+      const { data } = await axios.post(
         "http://localhost:5000/api/v1/user/register", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
-      
+  
+      if(data.status === "failed") {
+        toast({
+          title: 'Registration Failed',
+          description: data.message,
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+          position: 'top',
+        });
+        return;
+      }
+  
       localStorage.setItem("user", JSON.stringify(data));
       toast({
         title: 'Registration Successful',
         status: 'success',
         duration: 4000,
         isClosable: true,
-      })
+      });
       navigate("/chats", { replace: true });
     } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Failed to register. Please try again.';
       toast({
         title: 'Error',
-        description: 'Failed to register. Please try again.',
+        description: errorMessage,
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -82,19 +119,19 @@ const Signup = () => {
         <h1>Sign Up</h1>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <label htmlFor="name">Name:</label>
-          <input type="text" id="name" name="name" value={user.name} onChange={handleChange} pattern=".{4,}" title="Name must be at least 8 characters long" required />
+          <input type="text" id="name" name="name" value={user.name} onChange={handleChange} pattern=".{4,}" title="Name must be at least 4 characters long" />
 
           <label htmlFor="email">Email:</label>
-          <input type="email" id="email" name="email" value={user.email} onChange={handleChange} required />
+          <input type="email" id="email" name="email" value={user.email} onChange={handleChange} />
 
           <label htmlFor="password">Password:</label>
-          <input type="password" id="password" name="password" value={user.password} onChange={handleChange} pattern=".{8,}" title="Password must be at least 8 characters long" required />
+          <input type="password" id="password" name="password" value={user.password} onChange={handleChange} pattern=".{8,}" title="Password must be at least 8 characters long" required/>
 
           <label htmlFor="confirmPassword">Confirm Password:</label>
-          <input type="password" id="confirmPassword" name="confirmPassword" value={user.confirmPassword} onChange={handleChange} pattern=".{8,}" title="Password must be at least 8 characters long" required />
+          <input type="password" id="confirmPassword" name="confirmPassword" value={user.confirmPassword} onChange={handleChange} pattern=".{8,}" title="Password must be at least 8 characters long" required/>
 
           <label htmlFor="profilePicture">Profile Picture:</label>
-          <input type="file" id="profilePicture" name="picture" accept="image/*" onChange={handleChange} required />
+          <input type="file" id="profilePicture" name="picture" accept="image/*" onChange={handleChange} required/>
 
           <button type="submit">Sign Up</button>
         </form>
