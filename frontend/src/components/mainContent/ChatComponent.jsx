@@ -1,83 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { StreamChat } from 'stream-chat';
-import 'stream-chat-react/dist/css/index.css';
-import { Channel } from 'stream-chat-react';
-import { ChatState } from '../../contexts/ChatContext';
-import ChatNav from './ChatNav'; // Assuming this is the correct path to ChatNav
+import React, { useEffect, useState } from "react";
+import {
+  Chat as StreamChat,
+  Channel,
+  ChannelHeader,
+  MessageList,
+  MessageInput,
+  Thread,
+  Window,
+} from "stream-chat-react";
+import { StreamChat as StreamChatClient } from "stream-chat";
+import "stream-chat-react/dist/css/index.css";
+
+const apiKey = import.meta.env.VITE_STREAM_CHAT_API_KEY;
+const user = {
+  id: import.meta.env.VITE_STREAM_CHAT_USERID,
+  name: import.meta.env.VITE_STREAM_CHAT_USERNAME,
+  image: import.meta.env.VITE_STREAM_CHAT_USER_IMAGE,
+};
+
+const chatClient = StreamChatClient.getInstance(apiKey);
 
 const ChatComponent = () => {
-  const { user } = ChatState();
   const [channel, setChannel] = useState(null);
-  const [client, setClient] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null); // State to store selected user
 
   useEffect(() => {
-    if (user) {
-      const initializeChat = async () => {
-        try {
-          const client = new StreamChat('<YOUR_STREAM_API_KEY>'); // Replace with your Stream API key
-          await client.connectUser(
-            {
-              id: user.data.id,
-              name: user.data.name,
-              image: user.data.avatar,
-            },
-            user.token
-          );
-          setClient(client);
-        } catch (error) {
-          console.error('Error connecting to Stream Chat:', error);
-        }
-      };
+    const connectUser = async () => {
+      await chatClient.connectUser(user, chatClient.devToken(user.id));
+      const newChannel = chatClient.channel("messaging", "channel-id", {
+        name: "Chat App",
+        members: [user.id],
+      });
+      await newChannel.watch();
+      setChannel(newChannel);
+    };
 
-      initializeChat();
-    }
-  }, [user]);
+    connectUser();
 
-  const createChannel = async () => {
-    if (client && selectedUser) {
-      try {
-        if (!client.isConnected) {
-          await client.connectUser(
-            {
-              id: user.data.id,
-              name: user.data.name,
-              image: user.data.avatar,
-            },
-            user.token
-          );
-        }
+    return () => {
+      chatClient.disconnectUser();
+    };
+  }, []);
 
-        const channel = client.channel('messaging', {
-          members: [user.data.id, selectedUser.id],
-        });
-        setChannel(channel);
-      } catch (error) {
-        console.error('Error creating channel:', error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    createChannel();
-  }, [client, selectedUser]);
-
-  // Function to handle user selection
-  const handleSelectUser = (user) => {
-    setSelectedUser(user);
-  };
+  if (!channel) return <div>Loading...</div>;
 
   return (
-    <div>
-      <ChatNav user={user} handleSelectUser={handleSelectUser} />
-      {channel ? (
-        <Channel channel={channel}>
-          {/* Add components for displaying messages, input form, etc. */}
-        </Channel>
-      ) : (
-        <div>Loading...</div>
-      )}
-    </div>
+    <StreamChat client={chatClient} theme="messaging light">
+      <Channel channel={channel}>
+        <Window>
+          <ChannelHeader />
+          <MessageList />
+          <MessageInput />
+        </Window>
+        <Thread />
+      </Channel>
+    </StreamChat>
   );
 };
 
