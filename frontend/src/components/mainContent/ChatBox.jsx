@@ -36,7 +36,7 @@ const ChatBox = () => {
         >
           <Chatusers users={users} onSelectUser={handleSelectUser} />
         </Box>
-        <Box flex="1" bg="#242424" p="1rem" overflowY="auto">
+        <Box flex="1" bg="#242424" p="1rem" overflowY="auto" color='white'>
           <Chat selectedUser={selectedUser} />
         </Box>
       </Flex>

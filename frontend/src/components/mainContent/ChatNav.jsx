@@ -1,8 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  Avatar, Box, Button, Text, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent,
-  DrawerCloseButton, useDisclosure, Input, List, ListItem, useToast,
-} from "@chakra-ui/react";
+import React, { useState, useRef } from "react";
+import { Avatar, Box, Button, Text, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure, Input, List, ListItem, useToast, Flex} from "@chakra-ui/react";
 import { BellIcon, ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
 import { Menu, MenuButton, MenuList, MenuItem, MenuDivider } from "@chakra-ui/react";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
@@ -82,13 +79,11 @@ const ChatNav = ({ user }) => {
     <Box
       display="flex"
       justifyContent="space-between"
-      padding="1em"
+      padding="0.5em"
       alignItems="center"
       boxShadow="5px 5px 5px rgba(0,0,0,0.4)"
     >
-      <Button leftIcon={<SearchIcon />} ref={btnRef} onClick={onDrawerOpen}>
-        Search
-      </Button>
+      <Button leftIcon={<SearchIcon />} ref={btnRef} onClick={onDrawerOpen}>Search Users</Button>
       <Drawer
         isOpen={isDrawerOpen}
         placement="left"
@@ -97,28 +92,46 @@ const ChatNav = ({ user }) => {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Search users</DrawerHeader>
-          <DrawerBody>
+          <DrawerCloseButton color="white"/>
+          <DrawerHeader backgroundColor="#333333" color="white" mb={-3}>Search users</DrawerHeader>
+          <DrawerBody backgroundColor="#333333">
             <Input
+              color="white"
               placeholder="Search by name or email"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <Button mt={4} colorScheme="blue" onClick={handleSearch}>
+            <Button mt={3} colorScheme="blue" onClick={handleSearch}>
               Search
             </Button>
-            <List spacing={3} mt={4}>
-              {searchResults.map((user) => (
-                <ListItem key={user._id} display="flex" alignItems="center">
-                  <Avatar name={user.name} src={user.photo} size="sm" mr={2} />
-                  <Text>{user.name}</Text>
-                </ListItem>
-              ))}
-            </List>
+            <Box maxH="400px" overflowY="auto">
+              <List spacing={2} mt={3}>
+                {searchResults.map((user) => (
+                  <ListItem
+                    key={user._id}
+                    display="flex"
+                    alignItems="center"
+                    p={1.3}
+                    pl={3}
+                    bg="white"
+                    borderRadius="md"
+                    boxShadow="sm"
+                    _hover={{ boxShadow: 'md', bg: 'gray.50' }}
+                    backgroundColor='#bccfce'
+                    cursor={"pointer"}
+                  >
+                    <Avatar name={user.name} src={user.photo} size="sm" mr={4} />
+                    <Flex direction="column">
+                      <Text fontSize="md" fontWeight="bold" textTransform="capitalize">{user.name}</Text>
+                      <Text fontSize="sm" color="gray.600">{user.email}</Text>
+                    </Flex>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
           </DrawerBody>
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onDrawerClose}>
+          <DrawerFooter backgroundColor="#333333">
+            <Button variant="outline" mr={3} color="white" onClick={onDrawerClose}>
               Cancel
             </Button>
             <Button colorScheme="blue" onClick={onDrawerClose}>
@@ -127,14 +140,14 @@ const ChatNav = ({ user }) => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-      <Text>Chat app</Text>
+      <Text display="flex" color='black' fontWeight="bolder" gap="9px" textAlign="center" backgroundColor='#EDF2F7' padding="0.5em" borderRadius="0.3em"><img width="30px" src="/logo6-rmg.png" alt="Chattastrophe Logo"/>Chattastrophe</Text>
       <Box
         display="flex"
         gap="1em"
         justifyContent="space-between"
         alignItems="center"
       >
-        <Menu>
+        <Menu>  
           <MenuButton as={Button}>
             <BellIcon w={8} h={5} />
           </MenuButton>
