@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import ChatNav from './ChatNav';
 import Chatusers from './Chatusers';
-import Chat from './Chat';
+import ChatComponent from './ChatComponent';
 import { ChatState } from '../../contexts/ChatContext';
 
 const ChatBox = () => {
@@ -10,7 +10,9 @@ const ChatBox = () => {
   console.log("user: ", user);
   const [users] = useState([
     { id: "1", name: 'Bob', avatar: 'https://bit.ly/ryan-florence', displayName: 'User 1', email: 'bob@example.com' },
-    
+    { id: "2", name: 'Timmy', avatar: 'https://bit.ly/dan-abramov', displayName: 'User 2', email: 'timmy@example.com' },
+    { id: "3", name: 'Timmy', avatar: 'https://bit.ly/dan-abramov', displayName: 'User 3', email: 'timmy@example.com' },
+    // Add more users as needed
   ]);
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -35,7 +37,7 @@ const ChatBox = () => {
           <Chatusers users={users} onSelectUser={handleSelectUser} />
         </Box>
         <Box flex="1" bg="#242424" p="1rem" overflowY="auto" color='white'>
-          <Chat selectedUser={selectedUser} />
+          <ChatComponent selectedUser={selectedUser} />
         </Box>
       </Flex>
     </Flex>

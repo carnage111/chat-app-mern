@@ -83,7 +83,7 @@ const ChatNav = ({ user }) => {
       alignItems="center"
       boxShadow="5px 5px 5px rgba(0,0,0,0.4)"
     >
-      <Button leftIcon={<SearchIcon />} ref={btnRef} onClick={onDrawerOpen}>Search Users</Button>
+      <Button leftIcon={<SearchIcon />} ref={btnRef} onClick={onDrawerOpen}>Search Users/Add users</Button>
       <Drawer
         isOpen={isDrawerOpen}
         placement="left"
