@@ -31,12 +31,19 @@ const register=asyncHandler(async (req,res)=>{
     })
 })
 
+
+
+
 const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   console.log(req.body);
   let existingUser = await User.findOne({ email });
 
-  if (!existingUser || !(await existingUser.verifyPassword(password, existingUser.password))) {
+  if (!existingUser) {
+    return res.status(404).json({ message: "User email is not registered. Please sign up." });
+  }
+
+  if (!(await existingUser.verifyPassword(password, existingUser.password))) {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
@@ -50,6 +57,8 @@ const login = asyncHandler(async (req, res, next) => {
     token,
   });
 });
+
+
 
 
 // /home?search=akash

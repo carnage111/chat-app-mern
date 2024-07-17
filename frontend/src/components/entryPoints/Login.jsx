@@ -13,9 +13,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let formData = new FormData();
-    formData.append('email', email);
-    formData.append('password', password);
+    const formData = {
+      email,
+      password,
+    };
 
     try {
       let { data } = await axios.post(
@@ -33,12 +34,13 @@ const Login = () => {
         status: 'success',
         duration: 4000,
         isClosable: true,
-      })
+      });
       navigate('/chats', { replace: true });
     } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Something went wrong. Please try again.';
       toast({
         title: 'Login failed',
-        description: error.response?.data?.message || 'Something went wrong. Please try again.',
+        description: errorMessage,
         status: 'error',
         duration: 5000,
         isClosable: true,
