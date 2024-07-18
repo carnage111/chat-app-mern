@@ -26,7 +26,7 @@ app.use("/api/v1/chat",chatRouter)
 
 app.all('*', (req, res, next) => {
     let err = new Error(`Page not found ${req.originalUrl}!`);
-    err.status(404);
+    err.statusCode(404);
     next(err);
 });
 

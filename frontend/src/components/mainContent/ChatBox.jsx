@@ -6,42 +6,30 @@ import ChatComponent from './ChatComponent';
 import { ChatState } from '../../contexts/ChatContext';
 
 const ChatBox = () => {
-  let {user} = ChatState()
-  console.log("user: ", user);
-  const [users] = useState([
-    { id: "1", name: 'Bob', avatar: 'https://bit.ly/ryan-florence', displayName: 'User 1', email: 'bob@example.com' },
-    { id: "2", name: 'Timmy', avatar: 'https://bit.ly/dan-abramov', displayName: 'User 2', email: 'timmy@example.com' },
-    { id: "3", name: 'Timmy', avatar: 'https://bit.ly/dan-abramov', displayName: 'User 3', email: 'timmy@example.com' },
-    // Add more users as needed
-  ]);
-
+  let { user } = ChatState();
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const handleSelectUser = (user) => {
     setSelectedUser(user);
+    if (!users.find(u => u._id === user._id)) {
+      setUsers([...users, user]);
+    }
   };
 
   return (
     <Flex direction="column" h="100vh" bg="#242424">
-      <Box>
-        {user && <ChatNav user={user}/>}
-      </Box>
+      <Box>{user && <ChatNav user={user} onSelectUser={handleSelectUser} />}</Box>
       <Flex flex="1" overflow="hidden">
-        <Box
-          w={{ base: "full", md: "300px" }}
-          borderRight="1px solid #444"
-          bg="#333"
-          p="1rem"
-          overflowY="auto"
-        >
+        <Box w={{ base: "full", md: "350px" }} borderRight="1px solid #444" bg="#333" p="1rem" overflowY="auto">
           <Chatusers users={users} onSelectUser={handleSelectUser} />
         </Box>
-        <Box flex="1" bg="#242424" p="1rem" overflowY="auto" color='white'>
-          <ChatComponent selectedUser={selectedUser} />
+        <Box flex="1" bg="#242424" p="0.5rem" overflowY="auto" color="white">
+          <ChatComponent user={user} selectedUser={selectedUser} />
         </Box>
       </Flex>
     </Flex>
   );
-}
+};
 
 export default ChatBox;
