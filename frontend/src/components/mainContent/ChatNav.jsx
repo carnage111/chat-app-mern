@@ -6,10 +6,11 @@ import {
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, 
   ModalCloseButton 
 } from "@chakra-ui/react";
-import { BellIcon, ChevronDownIcon, SearchIcon } from "@chakra-ui/icons";
+import { BellIcon, ChevronDownIcon, CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ChatLoading from "./ChatLoading";
+import UserList from "./UserList";
 import { ChatState } from "../../contexts/ChatContext";
 
 const ChatNav = () => {
@@ -27,7 +28,7 @@ const ChatNav = () => {
 
   const logout = () => {
     localStorage.removeItem("user");
-    navigate("/", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   const accessChat = async (id) => {
@@ -126,8 +127,8 @@ const ChatNav = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="space-between" padding="0.5em" alignItems="center" boxShadow="5px 5px 5px rgba(0,0,0,0.4)">
-      <Button leftIcon={<SearchIcon />} ref={btnRef} onClick={onDrawerOpen}>Search Users/Add users</Button>
+    <Box display="flex" justifyContent="space-between" padding="0.5em 1em" alignItems="center" boxShadow="5px 5px 5px rgba(0,0,0,0.4)">
+      <Button  leftIcon={<SearchIcon />} ref={btnRef} onClick={onDrawerOpen}>Search Users/Add users</Button>
       <Drawer isOpen={isDrawerOpen} placement="left" onClose={onDrawerClose} finalFocusRef={btnRef}>
         <DrawerOverlay />
         <DrawerContent>
@@ -141,34 +142,38 @@ const ChatNav = () => {
               onChange={(e) => setSearch(e.target.value)}
             />
             <Button mt={3} mb={2} colorScheme="blue" onClick={handleSearch}>Search</Button>
-            <Box maxH="80%" overflowY="auto">
+            <Box maxH="80%" 
+              sx={{
+                overflowY: 'auto',
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#000 #333',
+                '&::-webkit-scrollbar': {
+                  width: '8px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: '#333',
+                  borderRadius: '10px',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: '#000',
+                  borderRadius: '10px',
+                  border: '2px solid #333',
+                },
+                '&::-webkit-scrollbar-thumb:hover': {
+                  background: '#555',
+                },
+              }}
+            >
               {loading ? (
                 <ChatLoading />
               ) : (
-                <List spacing={3} mt={1}>
-                  {searchUsers.map((user) => (
-                    <ListItem
-                      key={user._id}
-                      display="flex"
-                      alignItems="center"
-                      p={2}
-                      pl={4}
-                      bg="white"
-                      borderRadius="md"
-                      boxShadow="sm"
-                      _hover={{ boxShadow: 'md', bg: 'gray.50' }}
-                      backgroundColor='#bccfce'
-                      cursor="pointer"
-                      onClick={() => accessChat(user._id)}
-                    >
-                      <Avatar name={user.name} src={user.photo} size="md" mr={4} />
-                      <Flex direction="column">
-                        <Text fontSize="lg" fontWeight="bold" textTransform="capitalize">{user.name}</Text>
-                        <Text fontSize="md" color="gray.600">{user.email}</Text>
-                      </Flex>
-                    </ListItem>
-                  ))}
-                </List>
+                searchUsers.map((user) => (
+                  <UserList
+                    key={user._id}
+                    user={user}
+                    handleFunction={() => accessChat(user._id)}
+                  />
+                ))
               )}
             </Box>
           </DrawerBody>

@@ -5,7 +5,7 @@ const auth = asyncHandler(async (req, res, next) => {
   const testToken = req.headers.authorization;
   // console.log(testToken);
   let token;
-  if (testToken || testToken.startsWith("Bearer")) {
+  if (testToken || testToken?.startsWith("Bearer")) {
     token = testToken.split(" ")[1];
   }
   //verify token

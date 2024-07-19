@@ -21,7 +21,7 @@ const ChatBox = () => {
     <Flex direction="column" h="100vh" bg="#242424">
       <Box>{user && <ChatNav user={user} onSelectUser={handleSelectUser} />}</Box>
       <Flex flex="1" overflow="hidden">
-        <Box w={{ base: "full", md: "350px" }} borderRight="1px solid #444" bg="#333" p="1rem" overflowY="auto">
+        <Box w={{ base: "full", md: "350px" }} bg="#242424" p="0rem 1rem 1rem 1rem" overflowY="auto">
           <Chatusers users={users} onSelectUser={handleSelectUser} />
         </Box>
         <Box flex="1" bg="#242424" p="0.5rem" overflowY="auto" color="white">
