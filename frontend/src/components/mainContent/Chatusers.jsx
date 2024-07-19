@@ -115,6 +115,8 @@ const Chatusers = () => {
                   cursor="pointer"
                   alignItems="center"
                   onClick={() => setSelectedChat(chat)}
+                  _hover={{ backgroundColor: "black" , transition: "0.39s"}}
+                  _active={{ backgroundColor: "black" }}
                 >
                   {!chat.isGroupChat && (
                     <Avatar name={chatUser?.name} src={chatUser?.photo} size="md" mr={4} />
