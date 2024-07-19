@@ -1,19 +1,17 @@
 import { AddIcon } from "@chakra-ui/icons";
-import { Box, Button, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Stack, Text, Avatar, Flex } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { ChatState } from "../../contexts/ChatContext";
 import { getuserName } from "../../config/chatLogics.js";
 
 const Chatusers = () => {
-  let [loggedUser,setLoggedUser]=useState(null)
+  let [loggedUser, setLoggedUser] = useState(null);
   const { chats, setChats, selectedChat, setSelectedChat } = ChatState();
 
   useEffect(() => {
-      let user = JSON.parse(localStorage.getItem("user"));
-      setLoggedUser(user);
-    }, []);
-    // setLoggedUser(JSON.parse(localStorage.getItem("user")));
-
+    let user = JSON.parse(localStorage.getItem("user"));
+    setLoggedUser(user);
+  }, []);
 
   return (
     <Box
@@ -33,25 +31,34 @@ const Chatusers = () => {
       </Box>
       <Box>
         <Stack display="flex" flexDirection="column" gap="0.1em">
-          {
-            chats.map((chat) => {
-              return (
-                <Box
-                  key={chat._id}
-                  marginTop="1em"
-                  borderRadius="0.5em"
-                  padding="1em"
-                  backgroundColor="teal"
-                  color="white"
-                  fontWeight="bold"
-                  _hover={{ backgroundColor: "#ddd" }}
-                  cursor="pointer"
-                >
-                  <Text fontWeight="bold">{chat.isGroupChat?chat.chatName:getuserName(loggedUser.data._id,chat.users)}</Text>
-                </Box>
-              );
-            })
-          }
+          {chats.map((chat) => {
+            const chatUser = chat.users.find(
+              (user) => user._id !== loggedUser?.data._id
+            );
+            return (
+              <Flex
+                key={chat._id}
+                marginTop="1em"
+                borderRadius="0.5em"
+                padding="0.7em"
+                backgroundColor="teal"
+                color="white"
+                fontWeight="bold"
+                _hover={{ backgroundColor: "#ddd" }}
+                cursor="pointer"
+                alignItems="center"
+              >
+                {!chat.isGroupChat && (
+                  <Avatar name={chatUser?.name} src={chatUser?.photo} size="md" mr={4} />
+                )}
+                <Text fontWeight="bold">
+                  {chat.isGroupChat
+                    ? chat.chatName
+                    : getuserName(loggedUser?.data._id, chat.users)}
+                </Text>
+              </Flex>
+            );
+          })}
         </Stack>
       </Box>
     </Box>
