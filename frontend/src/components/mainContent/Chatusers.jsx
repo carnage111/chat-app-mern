@@ -22,15 +22,14 @@ const Chatusers = () => {
       };
       let { data } = await axios.get("http://localhost:5000/api/v1/chat", config);
       // console.log(data);
-      if(data.length !== 0){
-        setChats(data)
-      }else{
+      if (data.length === 0) {
         toast({
           title: "No chats present, start a new chat!",
-          status: "error",
+          status: "info",
           duration: 5000,
           isClosable: true,
         });
+        return;
       }
       setChats(data);
     } catch (error) {
@@ -46,11 +45,14 @@ const Chatusers = () => {
   };
 
   useEffect(() => {
-    let user = JSON.parse(localStorage.getItem("user"));
-    setLoggedUser(user);
     if (user) {
       fetchChats();
     }
+  }, [user]);
+  
+  useEffect(() => {
+    let user = JSON.parse(localStorage.getItem("user"));
+    setLoggedUser(user);
   }, [user]);
 
   return (
