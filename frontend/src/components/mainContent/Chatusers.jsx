@@ -5,6 +5,7 @@ import { ChatState } from "../../contexts/ChatContext";
 import { getuserName } from "../../config/chatLogics.js";
 import axios from "axios";
 import ChatLoading from "./ChatLoading";
+import GroupChatCreateModal from "./GroupChatCreateModal.jsx";
 
 const Chatusers = () => {
   let toast = useToast();
@@ -68,9 +69,11 @@ const Chatusers = () => {
         <Text size="lg" fontWeight="bold" color="#fff">
           My Chats
         </Text>
-        <Button iconSpacing="2" rightIcon={<AddIcon />}>
-          New Group Chat
-        </Button>
+        <GroupChatCreateModal>
+          <Button iconSpacing="2" rightIcon={<AddIcon />}>
+            New Group Chat
+          </Button>
+        </GroupChatCreateModal>
       </Box>
       <Box
         maxH="90%"
