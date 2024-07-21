@@ -24,12 +24,7 @@ const ChatNav = () => {
   const [search, setSearch] = useState("");
   const [searchUsers, setSearchUsers] = useState([]);
 
-  const { user, chats, setChats, selectedChat, setSelectedChat } = ChatState();
-
-  const logout = () => {
-    localStorage.removeItem("user");
-    navigate("/login", { replace: true });
-  };
+  const { user, chats, setChats, selectedChat, setSelectedChat, logout } = ChatState();
 
   const accessChat = async (id) => {
     try {

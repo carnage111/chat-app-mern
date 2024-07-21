@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import './signup-login.css';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import { useToast } from '@chakra-ui/react';
+import React, { useState } from "react";
+import "./signup-login.css";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
+import { ChatState } from "../../contexts/ChatContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const toast = useToast();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { setUser } = ChatState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,28 +22,29 @@ const Login = () => {
 
     try {
       let { data } = await axios.post(
-        'http://localhost:5000/api/v1/user/login',
+        "http://localhost:5000/api/v1/user/login",
         formData,
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
-      localStorage.setItem('user', JSON.stringify(data));
+      localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
       toast({
-        title: 'Login Successful',
-        status: 'success',
+        title: "Login Successful",
+        status: "success",
         duration: 4000,
         isClosable: true,
       });
-      navigate('/chats', { replace: true });
+      navigate("/chats", { replace: true });
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Something went wrong. Please try again.';
+      const errorMessage = error.response?.data?.message || "Something went wrong. Please try again.";
       toast({
-        title: 'Login failed',
+        title: "Login failed",
         description: errorMessage,
-        status: 'error',
+        status: "error",
         duration: 5000,
         isClosable: true,
       });

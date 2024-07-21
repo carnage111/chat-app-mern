@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
-import ChatNav from './ChatNav';
-import Chatusers from './Chatusers';
-import ChatComponent from './ChatComponent';
-import { ChatState } from '../../contexts/ChatContext';
+import React, { useEffect, useState } from "react";
+import { Box, Flex } from "@chakra-ui/react";
+import ChatNav from "./ChatNav";
+import Chatusers from "./Chatusers";
+import ChatComponent from "./ChatComponent";
+import { ChatState } from "../../contexts/ChatContext";
 
 const ChatBox = () => {
   let { user } = ChatState();
+  useEffect(() => {
+    console.log("user in chatbox", user);
+  }, [user]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const handleSelectUser = (user) => {
     setSelectedUser(user);
-    if (!users.find(u => u._id === user._id)) {
+    if (!users.find((u) => u._id === user._id)) {
       setUsers([...users, user]);
     }
   };

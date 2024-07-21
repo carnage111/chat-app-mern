@@ -1,32 +1,40 @@
-import { createContext, useContext, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-useNavigate
+import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-let ChatContext=createContext()
+let ChatContext = createContext();
 
+let ChatProvider = ({ children }) => {
+  let [user, setUser] = useState(null);
+  let [selectedChat, setSelectedChat] = useState(null);
+  let [chats, setChats] = useState([]);
+  let navigate = useNavigate();
 
-let ChatProvider=({children})=>{
-    let [user,setUser]=useState(null)
-    let [selectedChat,setSelectedChat]=useState(null)
-    let [chats,setChats]=useState([])
-    let navigate=useNavigate()
-    useEffect(()=>{
-        let user=JSON.parse(localStorage.getItem("user"))
-        console.log("user in context api",user);
-        if(!user){
-            navigate("/",{replace:true})
-        }
-        setUser(user)
-    },[ ])
+  useEffect(() => {
+    let storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser) {
+      navigate("/login", { replace: true });
+    } else {
+      setUser(storedUser);
+    }
+  }, [navigate]);
 
-    return <ChatContext.Provider value={{user,setUser,chats,setChats,selectedChat,setSelectedChat}}>
-        {children}
+  const logout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    setSelectedChat(null);
+    setChats([]);
+    navigate("/login", { replace: true });
+  };
+
+  return (
+    <ChatContext.Provider value={{ user, setUser, chats, setChats, selectedChat, setSelectedChat, logout }}>
+      {children}
     </ChatContext.Provider>
-}
+  );
+};
 
-export let ChatState=()=>{
-    return useContext(ChatContext)
-}
-
+export let ChatState = () => {
+  return useContext(ChatContext);
+};
 
 export default ChatProvider;
