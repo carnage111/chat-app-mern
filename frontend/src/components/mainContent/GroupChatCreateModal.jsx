@@ -77,6 +77,9 @@ const GroupChatCreateModal = ({ children }) => {
       );
       console.log(JSON.stringify(selectedUsers));
       setChats([data, ...chats]);
+      setSearch("")
+      setSelectedUsers([])
+      setGroupName("")
       onClose();
       toast({
         title: "Group Chat Created",
