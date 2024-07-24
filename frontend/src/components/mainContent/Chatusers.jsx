@@ -114,7 +114,8 @@ const Chatusers = () => {
                   mb="1em"
                   borderRadius="0.5em"
                   padding="0.5em"
-                  backgroundColor={selectedChat?._id === chat._id ? "black" : "transparent"}
+                  backgroundColor={selectedChat?._id === chat._id ? "black" : "#333"}
+                  border="2px solid #000"
                   color={selectedChat?._id === chat._id ? "white" : "white"}
                   fontWeight="bold"
                   cursor="pointer"
