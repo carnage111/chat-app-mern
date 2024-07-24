@@ -114,14 +114,13 @@ const Chatusers = () => {
                   mb="1em"
                   borderRadius="0.5em"
                   padding="0.5em"
-                  backgroundColor="teal"
-                  color="white"
+                  backgroundColor={selectedChat?._id === chat._id ? "black" : "transparent"}
+                  color={selectedChat?._id === chat._id ? "white" : "white"}
                   fontWeight="bold"
                   cursor="pointer"
                   alignItems="center"
                   onClick={() => setSelectedChat(chat)}
-                  _hover={{ backgroundColor: "black" , transition: "0.39s"}}
-                  _active={{ backgroundColor: "black" }}
+                  _hover={{ backgroundColor: "black" , transition: "0s"}}
                 >
                   {!chat.isGroupChat && (
                     <Avatar name={chatUser?.name} src={chatUser?.photo} size="md" mr={4} />
@@ -130,7 +129,7 @@ const Chatusers = () => {
                     {chat.isGroupChat ? chat.chatName : getuserName(loggedUser?.data._id, chat.users)}
                   </Text>
                 </Flex>
-              );
+              );  
             })}
           </Stack>
         )}

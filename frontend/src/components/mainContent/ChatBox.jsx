@@ -4,6 +4,7 @@ import ChatNav from "./ChatNav";
 import Chatusers from "./Chatusers";
 import ChatComponent from "./ChatComponent";
 import { ChatState } from "../../contexts/ChatContext";
+import ChatWindow from "./ChatWindow";
 
 const ChatBox = () => {
   let { user } = ChatState();
@@ -27,8 +28,8 @@ const ChatBox = () => {
         <Box w={{ base: "full", md: "350px" }} bg="#242424" p="0rem 1rem 1rem 1rem" overflowY="auto">
           <Chatusers users={users} onSelectUser={handleSelectUser} />
         </Box>
-        <Box flex="1" bg="#242424" p="0.5rem" overflowY="auto" color="white">
-          <ChatComponent user={user} selectedUser={selectedUser} />
+        <Box flex="1" bg="#242424" p="0 1em 1em 0.5em" overflowY="auto" color="white">
+          <ChatWindow/>
         </Box>
       </Flex>
     </Flex>
