@@ -12,11 +12,11 @@ let ChatProvider = ({ children }) => {
   useEffect(() => {
     let storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser) {
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     } else {
       setUser(storedUser);
     }
-  }, [navigate]);
+  }, []);
 
   const logout = () => {
     localStorage.removeItem("user");

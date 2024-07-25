@@ -3,19 +3,21 @@ import './signup-login.css';
 import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { ChatState } from '../../contexts/ChatContext';
 
 const Signup = () => {
   const navigate = useNavigate();
   const toast = useToast();
-
-  const [user, setUser] = useState({
+  const { setUser } = ChatState();
+  
+  const [user, setRegisterUser] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
     picture: null,
   });
-
+  
   const handleChange = (event) => {
     const { name, value, files } = event.target;
 
@@ -34,7 +36,7 @@ const Signup = () => {
       }
     }
 
-    setUser((prevUser) => ({ ...prevUser, [name]: name === 'picture' ? files[0] : value }));
+    setRegisterUser((prevUser) => ({ ...prevUser, [name]: name === 'picture' ? files[0] : value }));
   };
 
   const handleSubmit = async (event) => {
@@ -93,6 +95,7 @@ const Signup = () => {
       }
   
       localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
       toast({
         title: 'Registration Successful',
         status: 'success',
