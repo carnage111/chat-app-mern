@@ -47,9 +47,9 @@ const login = asyncHandler(async (req, res, next) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  existingUser = await User.findById(existingUser._id).select({ password: 0, confirmPassword: 0 });
+  existingUser = await User.findById(existingUser?._id).select({ password: 0, confirmPassword: 0 });
 
-  let token = await genToken(existingUser._id);
+  let token = await genToken(existingUser?._id);
 
   res.status(200).json({
     status: "Success!",

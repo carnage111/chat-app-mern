@@ -5,6 +5,7 @@ import {db} from './config/db.js';
 import userRouter from './routes/userRoutes.js';
 import globalErrorHandler from './middleware/globalErrorHandler.js';
 import chatRouter from './routes/chatRoutes.js';
+import messageRouter from './routes/messageRoutes.js';
 
 //dotenv config to use environment variables
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(express.json()); //to parse the incoming request with JSON payloads
 // Register User Routes
 app.use("/api/v1/user",userRouter)
 app.use("/api/v1/chat",chatRouter)
+app.use("/api/v1/message",messageRouter)
 
 
 app.all('*', (req, res, next) => {
