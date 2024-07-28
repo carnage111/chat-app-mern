@@ -1,52 +1,102 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ChatState } from "../../contexts/ChatContext";
-import { Box, IconButton, Text, Flex, Input, Button, useToast, Avatar } from "@chakra-ui/react";
+import { Box, IconButton, Text, Flex, Input, Button, useToast, Avatar, Spinner } from "@chakra-ui/react";
 import { getUser, getuserName } from "../../config/chatLogics";
 import { ViewIcon } from "@chakra-ui/icons";
 import ProfileModal from "./ProfileModal";
-import { ChatFeed, Message } from "react-chat-ui";
-
-const users = {
-  0: "You",
-  Bob: "Bob",
-  2: "Timmy",
-};
+import ChatLoading from "./ChatLoading";
+import axios from "axios";
 
 const ChatComponent = () => {
   const { user, selectedChat } = ChatState();
-  const [messages, setMessages] = useState([
-    new Message({ id: "Bob", message: "Hey guys!", senderName: "Bob" }),
-    new Message({
-      id: 2,
-      message: (
-        <span>
-          <span>11:50:</span>Hey! Timmy here.
-        </span>
-      ),
-      senderName: "Timmy",
-    }),
-  ]);
-  const [currUser, setCurrUser] = useState(0);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const messageInput = useRef(null);
   const toast = useToast();
 
-  const onMessageSubmit = (e) => {
+  useEffect(() => {
+    if (selectedChat) {
+      console.log(selectedChat);
+      fetchMessages();
+    }
+  }, [selectedChat]);
+
+  const fetchMessages = async () => {
+    setLoading(true);
+    try {
+      let config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(`http://localhost:5000/api/v1/message/${selectedChat._id}`, config);
+      setMessages(data.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toast({
+        title: "Error fetching messages",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const onMessageSubmit = async (e) => {
     e.preventDefault();
     const input = messageInput.current;
     if (!input.value) {
       return;
     }
-    pushMessage(currUser, input.value);
-    input.value = "";
+    setSending(true);
+    try {
+      let config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.post("http://localhost:5000/api/v1/message", {
+        content: input.value,
+        chatId: selectedChat._id,
+      }, config);
+      setMessages((prevMessages) => [...prevMessages, data.data]);
+      input.value = "";
+      setSending(false);
+    } catch (error) {
+      setSending(false);
+      toast({
+        title: "Error sending message",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
-  const pushMessage = (recipient, message) => {
-    const newMessage = new Message({
-      id: recipient,
-      message,
-      senderName: users[recipient],
-    });
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+  const renderMessage = (message) => {
+    const isSentByCurrentUser = message.sender._id === user.data._id;
+    return (
+      <Box
+        key={message._id}
+        display="flex"
+        justifyContent={isSentByCurrentUser ? "flex-end" : "flex-start"}
+        mb="0.5rem"
+      >
+        <Box
+          borderRadius="20px"
+          padding="1rem"
+          backgroundColor={isSentByCurrentUser ? "#0084FF" : "#333"}
+          color="#fff"
+          maxWidth="80%"
+        >
+          {message.content}
+        </Box>
+      </Box>
+    );
   };
 
   return (
@@ -67,8 +117,8 @@ const ChatComponent = () => {
             p={2}
             pl={4}
             borderBottom="1px solid #444"
-          > 
-            <Box display="flex" alignItems="center"> 
+          >
+            <Box display="flex" alignItems="center">
               {!selectedChat.isGroupChat ? (
                 <Avatar name={getUser(user.data._id, selectedChat.users).name} src={getUser(user.data._id, selectedChat.users).photo} size="sm" mr={3} />
               ) : (
@@ -90,7 +140,6 @@ const ChatComponent = () => {
           </Box>
           <Flex
             direction="column"
-            // flex="1"
             p="1rem"
             bg="#1a1a1a"
             borderRadius="10px"
@@ -103,7 +152,7 @@ const ChatComponent = () => {
               boxShadow="0 4px 8px rgba(0, 0, 0, 0.2)"
               overflowY="auto"
               mb="1rem"
-              height="68vh" 
+              height="68vh"
               sx={{
                 '&::-webkit-scrollbar': {
                   width: '8px',
@@ -120,24 +169,7 @@ const ChatComponent = () => {
                 },
               }}
             >
-              <ChatFeed
-                messages={messages}
-                showSenderName
-                bubblesCentered={false}
-                bubbleStyles={{
-                  text: {
-                    fontSize: 16,
-                    color: '#fff',
-                  },
-                  chatbubble: {
-                    borderRadius: 20,
-                    padding: "1rem",
-                    marginBottom: "0.5rem",
-                    backgroundColor: "#0a84ff",
-                    color: "#fff",
-                  },
-                }}
-              />
+              {loading ? <ChatLoading /> : messages.map(renderMessage)}
             </Box>
             <form onSubmit={onMessageSubmit}>
               <Flex>
@@ -152,6 +184,7 @@ const ChatComponent = () => {
                   mr="0.5rem"
                   borderRadius="20px"
                   p="1rem"
+                  isDisabled={sending}
                 />
                 <Button
                   type="submit"
@@ -160,6 +193,8 @@ const ChatComponent = () => {
                   borderRadius="20px"
                   px="1.5rem"
                   _hover={{ bg: "#006edc" }}
+                  isLoading={sending}
+                  loadingText="Sending"
                 >
                   Send
                 </Button>
