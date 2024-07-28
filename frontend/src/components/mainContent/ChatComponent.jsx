@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { ChatState } from "../../contexts/ChatContext";
-import { Box, IconButton, Text, Flex, Input, Button, useToast } from "@chakra-ui/react";
+import { Box, IconButton, Text, Flex, Input, Button, useToast, Avatar } from "@chakra-ui/react";
 import { getUser, getuserName } from "../../config/chatLogics";
 import { ViewIcon } from "@chakra-ui/icons";
 import ProfileModal from "./ProfileModal";
@@ -67,12 +67,19 @@ const ChatComponent = () => {
             p={2}
             pl={4}
             borderBottom="1px solid #444"
-          >
-            <Text fontSize="1em" fontWeight="bold" color="white">
-              {selectedChat.isGroupChat
-                ? selectedChat.chatName.toUpperCase()
-                : getuserName(user.data._id, selectedChat.users).toUpperCase()}
-            </Text>
+          > 
+            <Box display="flex" alignItems="center"> 
+              {!selectedChat.isGroupChat ? (
+                <Avatar name={getUser(user.data._id, selectedChat.users).name} src={getUser(user.data._id, selectedChat.users).photo} size="sm" mr={3} />
+              ) : (
+                <Avatar name="default-group-pic" src="/groupchat.png" size="sm" mr={3} />
+              )}
+              <Text fontSize="1em" fontWeight="bold" color="white">
+                {selectedChat.isGroupChat
+                  ? selectedChat.chatName.toUpperCase()
+                  : getuserName(user.data._id, selectedChat.users).toUpperCase()}
+              </Text>
+            </Box>
             {selectedChat.isGroupChat ? (
               <IconButton icon={<ViewIcon />} bg="#444" color="white" />
             ) : (
