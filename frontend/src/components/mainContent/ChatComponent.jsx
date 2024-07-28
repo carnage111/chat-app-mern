@@ -15,6 +15,7 @@ const ChatComponent = () => {
   const [sending, setSending] = useState(false);
   const messageInput = useRef(null);
   const messageEndRef = useRef(null);
+  const messageContainerRef = useRef(null);
   const toast = useToast();
 
   useEffect(() => {
@@ -26,6 +27,19 @@ const ChatComponent = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const messageContainer = messageContainerRef.current;
+    if (messageContainer) {
+      const handleClick = (e) => {
+        e.stopPropagation();
+      };
+      messageContainer.addEventListener('click', handleClick);
+      return () => {
+        messageContainer.removeEventListener('click', handleClick);
+      };
+    }
+  }, []);
 
   const fetchMessages = async () => {
     setLoading(true);
@@ -70,7 +84,11 @@ const ChatComponent = () => {
       setMessages((prevMessages) => [...prevMessages, data.data]);
       input.value = "";
       setSending(false);
-      messageInput.current.focus();
+      setTimeout(() => {
+        if (messageInput.current) {
+          messageInput.current.focus();
+        }
+      }, 0);
     } catch (error) {
       setSending(false);
       toast({
@@ -160,6 +178,7 @@ const ChatComponent = () => {
             boxShadow="0 4px 8px rgba(0, 0, 0, 0.3)"
           >
             <Box
+              ref={messageContainerRef}
               p="1rem"
               bg="#2a2a2a"
               borderRadius="10px"
@@ -184,7 +203,7 @@ const ChatComponent = () => {
               }}
             >
               {loading ? <ChatLoading /> : messages.map(renderMessage)}
-              <div ref={messageEndRef} /> {/* Element to scroll to */}
+              <div ref={messageEndRef} />
             </Box>
             <form onSubmit={onMessageSubmit}>
               <Flex>
