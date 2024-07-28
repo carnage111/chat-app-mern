@@ -6,6 +6,7 @@ import { ViewIcon } from "@chakra-ui/icons";
 import ProfileModal from "./ProfileModal";
 import ChatLoading from "./ChatLoading";
 import axios from "axios";
+import dayjs from "dayjs";
 
 const ChatComponent = () => {
   const { user, selectedChat } = ChatState();
@@ -13,14 +14,18 @@ const ChatComponent = () => {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const messageInput = useRef(null);
+  const messageEndRef = useRef(null);
   const toast = useToast();
 
   useEffect(() => {
     if (selectedChat) {
-      console.log(selectedChat);
       fetchMessages();
     }
   }, [selectedChat]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const fetchMessages = async () => {
     setLoading(true);
@@ -65,6 +70,7 @@ const ChatComponent = () => {
       setMessages((prevMessages) => [...prevMessages, data.data]);
       input.value = "";
       setSending(false);
+      messageInput.current.focus();
     } catch (error) {
       setSending(false);
       toast({
@@ -77,13 +83,18 @@ const ChatComponent = () => {
     }
   };
 
+  const scrollToBottom = () => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const renderMessage = (message) => {
     const isSentByCurrentUser = message.sender._id === user.data._id;
     return (
       <Box
         key={message._id}
         display="flex"
-        justifyContent={isSentByCurrentUser ? "flex-end" : "flex-start"}
+        flexDirection="column"
+        alignItems={isSentByCurrentUser ? "flex-end" : "flex-start"}
         mb="0.5rem"
       >
         <Box
@@ -95,6 +106,9 @@ const ChatComponent = () => {
         >
           {message.content}
         </Box>
+        <Text fontSize="xs" color="gray.400">
+          {dayjs(message.createdAt).format('h:mm A')}
+        </Text>
       </Box>
     );
   };
@@ -170,6 +184,7 @@ const ChatComponent = () => {
               }}
             >
               {loading ? <ChatLoading /> : messages.map(renderMessage)}
+              <div ref={messageEndRef} /> {/* Element to scroll to */}
             </Box>
             <form onSubmit={onMessageSubmit}>
               <Flex>

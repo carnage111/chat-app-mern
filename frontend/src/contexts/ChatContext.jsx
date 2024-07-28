@@ -23,7 +23,7 @@ let ChatProvider = ({ children }) => {
     setUser(null);
     setSelectedChat(null);
     setChats([]);
-    navigate("/login", { replace: true });
+    navigate("/login", { replace: true }); //here replace: true will replace the current history entry with the new one so that user can't go back to the chat page after logging out
   };
 
   return (
