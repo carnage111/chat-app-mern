@@ -117,14 +117,14 @@ const ChatComponent = () => {
       >
         <Box
           borderRadius="20px"
-          padding="1rem"
-          backgroundColor={isSentByCurrentUser ? "#0084FF" : "#333"}
+          padding="0.2rem 0.5rem"
+          backgroundColor={isSentByCurrentUser ? "#0084FF" : "#000"}
           color="#fff"
           maxWidth="80%"
         >
           {message.content}
         </Box>
-        <Text fontSize="xs" color="gray.400">
+        <Text fontSize="xs" color="gray.400" p="0.2em 0.5em">
           {dayjs(message.createdAt).format('h:mm A')}
         </Text>
       </Box>
