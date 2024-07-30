@@ -117,7 +117,7 @@ const ChatComponent = () => {
       >
         <Box
           borderRadius="25px"
-          padding="0.1rem 0.5rem"
+          padding="0.1rem 0.8rem"
           backgroundColor={isSentByCurrentUser ? "#0084FF" : "#000"}
           color="#fff"
           maxWidth="80%"
@@ -126,7 +126,7 @@ const ChatComponent = () => {
           alignItems={isSentByCurrentUser ? "flex-end" : "flex-start"}
         >
           {selectedChat.isGroupChat && !isSentByCurrentUser && (
-            <Text fontSize="0.8rem" color="yellow" fontWeight="700" p="0.2em 0.2em 0 0.2em">
+            <Text fontSize="0.8rem" color="yellow" fontWeight="700" p="0.2em 0.5em 0 0.3em">
               {`~${message.sender.name}`}
             </Text>
           )}
