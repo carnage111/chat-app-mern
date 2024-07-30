@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { ChatState } from "../../contexts/ChatContext";
 import { Box, IconButton, Text, Flex, Input, Button, useToast, Avatar, Spinner } from "@chakra-ui/react";
 import { getUser, getuserName } from "../../config/chatLogics";
-import { ViewIcon } from "@chakra-ui/icons";
+import { InfoOutlineIcon, ViewIcon } from "@chakra-ui/icons";
 import ProfileModal from "./ProfileModal";
 import ChatLoading from "./ChatLoading";
 import axios from "axios";
@@ -116,17 +116,25 @@ const ChatComponent = () => {
         mb="0.5rem"
       >
         <Box
-          borderRadius="20px"
-          padding="0.2rem 0.5rem"
+          borderRadius="25px"
+          padding="0.1rem 0.5rem"
           backgroundColor={isSentByCurrentUser ? "#0084FF" : "#000"}
           color="#fff"
           maxWidth="80%"
+          display="flex"
+          flexDirection="column"
+          alignItems={isSentByCurrentUser ? "flex-end" : "flex-start"}
         >
+          {selectedChat.isGroupChat && !isSentByCurrentUser && (
+            <Text fontSize="0.8rem" color="yellow" fontWeight="700" p="0.2em 0.2em 0 0.2em">
+              {`~${message.sender.name}`}
+            </Text>
+          )}
           {message.content}
+          <Text fontSize="8px" color={isSentByCurrentUser ? "#000" : "#0084FF"} fontWeight="800" p="0.3em 0.2em 0.2em 0.9em">
+            {dayjs(message.createdAt).format('h:mm A')}
+          </Text>
         </Box>
-        <Text fontSize="xs" color="gray.400" p="0.2em 0.5em">
-          {dayjs(message.createdAt).format('h:mm A')}
-        </Text>
       </Box>
     );
   };
@@ -163,7 +171,7 @@ const ChatComponent = () => {
               </Text>
             </Box>
             {selectedChat.isGroupChat ? (
-              <IconButton icon={<ViewIcon />} bg="#444" color="white" />
+              <IconButton icon={<InfoOutlineIcon />} bg="#444" color="white" />
             ) : (
               <ProfileModal user={getUser(user.data._id, selectedChat.users)}>
                 <IconButton icon={<ViewIcon />} bg="#444" color="white" />
